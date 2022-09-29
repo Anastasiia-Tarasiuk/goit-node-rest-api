@@ -1,6 +1,6 @@
 const express = require('express');
 const Joi = require('joi');
-const { listContacts, getContactById, removeContact, addContact, updateContact} = require('../../models/contacts');
+const { listContacts, getContactById, removeContact, addContact, updateContact, updateStatus} = require('../../models/contacts');
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
@@ -45,9 +45,7 @@ router.post('/', async (req, res, next) => {
       .required(),
     phone: Joi.string()
       .pattern(/^(?:\+38)?(?:\(\d{3}\)[ .-]?[0-9]{3}[ .-]?[0-9]{2}[ .-]?[0-9]{2}|044[ .-]?[0-9]{3}[ .-]?[0-9]{2}[ .-]?[0-9]{2}|044[0-9]{7})/)
-      .required(),
-    favorite: Joi.boolean()
-      .optional(),
+      .required()
   });
 
   const validation = schema.validate(req.body); 
@@ -91,8 +89,6 @@ router.put('/:contactId', async (req, res, next) => {
     phone: Joi.string()
       .pattern(/^(?:\+38)?(?:\(\d{3}\)[ .-]?[0-9]{3}[ .-]?[0-9]{2}[ .-]?[0-9]{2}|044[ .-]?[0-9]{3}[ .-]?[0-9]{2}[ .-]?[0-9]{2}|044[0-9]{7})/)
       .optional(),
-    favorite: Joi.boolean()
-      .optional(),
   });
 
   const validation = schema.validate(req.body);
@@ -108,6 +104,27 @@ router.put('/:contactId', async (req, res, next) => {
   }
   
   return res.status(404).json({ message: 'Not found' });  
+})
+
+router.patch('/:contactId/favorite', async (req, res, next) => {
+  const schema = Joi.object({
+    favorite: Joi.boolean()
+      .required(),
+  })
+
+  const validation = schema.validate(req.body); 
+
+   if (validation.error) {
+    return res.status(400).json({ message: `Failed because ${validation.error}` });
+  }
+
+  const contact = await updateStatus(req.params.contactId, req.body);
+
+  if (contact) {
+    return res.status(200).json({ contact, message: 'Success' });
+  }
+  
+  return res.status(404).json({ message: 'Not found' }); 
 })
 
 module.exports = router;

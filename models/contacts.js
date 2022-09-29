@@ -31,12 +31,11 @@ const removeContact = async (contactId) => {
 
 const addContact = async (body) => {
   try {
-    const { name, email, phone, favorite } = body;
+    const { name, email, phone} = body;
     const newContact = await Contact.create({
       name,
       email,
-      phone,
-      favorite
+      phone
     });
     return newContact;
   } catch (error) {
@@ -46,7 +45,7 @@ const addContact = async (body) => {
 
 const updateContact = async (contactId, body) => { 
   try {
-    const { name, email, phone, favorite } = body;
+    const { name, email, phone } = body;
     const updatedContact = {};
 
     if (updatedContact.name !== name) {
@@ -66,15 +65,23 @@ const updateContact = async (contactId, body) => {
         updatedContact.phone = phone;
       }
     }
-    
-    if (updatedContact.favorite !== favorite) {
-      if (favorite !== undefined) {
-        updatedContact.favorite = favorite;        
-      }
-    }
-    
+     
     const contact = await Contact.findOneAndUpdate( { _id: contactId }, updatedContact, {new: true} );
     return contact;
+  } catch (error) {
+    console.log(error); 
+  }
+}
+
+const updateStatus = async (contactId, body) => { 
+  try {
+    const { favorite } = body;
+
+    if (favorite !== undefined) {
+      const contact = await Contact.findOneAndUpdate( { _id: contactId }, {favorite}, {new: true} );
+      return contact;      
+    }
+    
   } catch (error) {
     console.log(error); 
   }
@@ -86,4 +93,5 @@ module.exports = {
   removeContact,
   addContact,
   updateContact,
+  updateStatus
 }

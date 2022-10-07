@@ -1,8 +1,8 @@
 const { Contact } = require('../../models/modelContacts');
 
-const updateStatus = async (contactId, body) => { 
+const updateStatus = async (contactId, req) => { 
   try {
-    const { favorite } = body;
+    const { favorite } = req.body;
 
     if (favorite !== undefined) {
       const contact = await Contact.findOneAndUpdate( { _id: contactId }, {favorite}, {new: true} );

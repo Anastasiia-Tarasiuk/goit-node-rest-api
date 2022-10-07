@@ -1,8 +1,8 @@
 const { Contact } = require('../../models/modelContacts');
 
-const updateContact = async (contactId, body) => { 
+const updateContact = async (contactId, req) => { 
   try {
-    const { name, email, phone } = body;
+    const { name, email, phone } = req.body;
     const updatedContact = {};
 
     if (updatedContact.name !== name) {

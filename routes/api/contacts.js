@@ -2,6 +2,7 @@ const express = require('express');
 const { addContactValidation, updateContactValidation, updateStatusValidation } = require('../../models/modelContacts');
 const { listContacts, getContactById, removeContact, addContact, updateContact, updateStatus} = require("../../controllers/contacts/index");
 const router = express.Router();
+// const { authenticate } = require('../../middlewares/authenticate');
 
 router.get('/', async (req, res, next) => {
   const contacts = await listContacts();
@@ -20,6 +21,8 @@ router.get('/:contactId', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
 
+  const { user } = req;
+
   const { name, email, phone } = req.body;
   
   if (!name) {
@@ -34,12 +37,12 @@ router.post('/', async (req, res, next) => {
     return res.status(400).json({ message: `Missing required phone field` });
   }
 
-  const validation = addContactValidation(req.body)
+  const validation = addContactValidation(req.body);
   if (validation.error) {
     return res.status(400).json({ message: `Failed because ${validation.error}` });
   }
 
-  const newContact = await addContact(req.body);
+  const newContact = await addContact(req.body, user);
   return res.status(201).json({ newContact, message: 'Success' });
 })
 

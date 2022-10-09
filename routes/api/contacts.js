@@ -2,15 +2,15 @@ const express = require('express');
 const { addContactValidation, updateContactValidation, updateStatusValidation } = require('../../models/modelContacts');
 const { listContacts, getContactById, removeContact, addContact, updateContact, updateStatus} = require("../../controllers/contacts/index");
 const router = express.Router();
-// const { authenticate } = require('../../middlewares/authenticate');
+const authentificate = require('../../middlewares/authenticate');
 
-router.get('/', async (req, res, next) => {
-  const contacts = await listContacts();
+router.get('/', authentificate, async (req, res, next) => {
+  const contacts = await listContacts(req);
   return res.status(200).json({ contacts, message: 'Success' });
 })
 
-router.get('/:contactId', async (req, res, next) => {  
-  const contact = await getContactById(req.params.contactId);
+router.get('/:contactId', authentificate, async (req, res, next) => {  
+  const contact = await getContactById(req.user, req.params.contactId);
 
   if (!contact) {
     return res.status(404).json({ message: 'Not found' });
@@ -19,7 +19,7 @@ router.get('/:contactId', async (req, res, next) => {
   return res.status(200).json({ contact, message: 'Success' });
 })
 
-router.post('/', async (req, res, next) => {
+router.post('/', authentificate, async (req, res, next) => {
 
   const { user } = req;
 
@@ -46,9 +46,9 @@ router.post('/', async (req, res, next) => {
   return res.status(201).json({ newContact, message: 'Success' });
 })
 
-router.delete('/:contactId', async (req, res, next) => {
+router.delete('/:contactId', authentificate, async (req, res, next) => {
   
-  const contact = await removeContact(req.params.contactId);
+  const contact = await removeContact(req.user, req.params.contactId);
   
   if (contact) {
     return res.status(200).json({ message: 'Contact deleted' });
@@ -57,7 +57,7 @@ router.delete('/:contactId', async (req, res, next) => {
   return res.status(404).json({ message: 'Not found' });
 })
 
-router.put('/:contactId', async (req, res, next) => {
+router.put('/:contactId', authentificate, async (req, res, next) => {
 
   const keysOfBody = Object.keys(req.body);
 
@@ -71,7 +71,7 @@ router.put('/:contactId', async (req, res, next) => {
     return res.status(400).json({ message: `Failed because ${validation.error}` });
   }
 
-  const contact = await updateContact(req.params.contactId, req.body);
+  const contact = await updateContact(req.user, req.params.contactId, req.body);
  
   if (contact) {
     return res.status(200).json({ contact, message: 'Success' });
@@ -80,14 +80,14 @@ router.put('/:contactId', async (req, res, next) => {
   return res.status(404).json({ message: 'Not found' });  
 })
 
-router.patch('/:contactId/favorite', async (req, res, next) => {
+router.patch('/:contactId/favorite', authentificate, async (req, res, next) => {
   const validation = updateStatusValidation(req.body); 
 
    if (validation.error) {
     return res.status(400).json({ message: `Failed because ${validation.error}` });
   }
 
-  const contact = await updateStatus(req.params.contactId, req.body);
+  const contact = await updateStatus(req.user, req.params.contactId, req.body);
 
   if (contact) {
     return res.status(200).json({ contact, message: 'Success' });

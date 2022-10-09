@@ -30,32 +30,4 @@ const authenticate = async (req, res, next) => {
 } 
 
 
-
-// const guard = async (req, res, next) => {
-//   const token = req.get("Authorization")?.split(" ")[1];
-//   // const bearer = req.get("Authorization")?.split(" ")[0];
-
-//   if (!verifyToken(token)) {
-//     return res.status(HttpCode.UNAUTHORIZED).send({
-//       status: "error",
-//       code: HttpCode.UNAUTHORIZED,
-//       message: "Not authorized",
-//     });
-//   }
-
-//   const payload = jwt.decode(token);
-//   const user = await usersRepository.findById(payload.id);
-
-//   if (!user || user.token !== token) {
-//     return res.status(HttpCode.UNAUTHORIZED).send({
-//       status: "error",
-//       code: HttpCode.UNAUTHORIZED,
-//       message: "Not authorized",
-//     });
-//   }
-//   req.user = user; // res.locals.user = user
-//   next();
-// };
-
-
 module.exports = authenticate;

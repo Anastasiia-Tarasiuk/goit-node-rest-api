@@ -6,8 +6,8 @@ require('dotenv').config()
 const contactsRouter = require('./routes/api/contacts');
 const registerRouter = require('./routes/api/register');
 const loginRouter = require('./routes/api/login');
-// const logoutRouter = require('./routes/api/logout');
-// const currentRouter = require('./routes/api/current');
+const logoutRouter = require('./routes/api/logout');
+const currentRouter = require('./routes/api/current');
 
 const app = express()
 
@@ -20,8 +20,8 @@ app.use(express.json())
 app.use('/api/contacts', contactsRouter);
 app.use('/api/users/register', registerRouter);
 app.use('/api/users/login', loginRouter);
-// app.use('/api/users/logout', logoutRouter);
-// app.use('/api/users/current', currentRouter);
+app.use('/api/users/logout', logoutRouter);
+app.use('/api/users/current', currentRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' })

@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
-const {SECRET_KEY} = process.env;
+const { SECRET_KEY } = process.env;
+const gravatar = require("gravatar")
 const { User, registerValidation, loginValidation } = require('../../models/modelUsers');
-const { logout, getCurrent } = require('../../controllers/auth/index');
-const authenticate = require('../../middlewares/authenticate');
+const { logout, getCurrent, changeAvatar } = require('../../controllers/auth/index');
+const authentificate = require('../../middlewares/authenticate');
+const upload = require('../../middlewares/upload');
 const { ctrlWrapper } = require('../../helpers/index');
 
 router.post('/register', async (req, res, next) => { 
@@ -22,11 +24,11 @@ router.post('/register', async (req, res, next) => {
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
-    const result = await User.create({name, email, password: hashPassword});
+    const avatarURL = gravatar.url(email);
+    const result = await User.create({name, email, password: hashPassword, avatarURL});
     return res.status(201).json({
         "user": {
             "email": result.email,
-            // "subscription": "starter"
         },
         message: 'User registered successfully'
     })
@@ -58,15 +60,15 @@ const {email, password} = req.body;
         "token": token,
         "user": {
             "email": email,
-            // "subscription": "starter"
         },
         message: 'User logged in successfully'
     })
 })
 
-router.get("/logout", authenticate, ctrlWrapper(logout));
+router.get("/logout", authentificate, ctrlWrapper(logout));
 
-router.get("/current", authenticate, ctrlWrapper(getCurrent));
+router.get("/current", authentificate, ctrlWrapper(getCurrent));
 
+router.patch("/avatars", authentificate, upload.single('avatar'), ctrlWrapper(changeAvatar));
 
 module.exports = router;

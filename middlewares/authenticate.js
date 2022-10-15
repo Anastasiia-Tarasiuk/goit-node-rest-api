@@ -3,7 +3,6 @@ const { User } = require("../models/modelUsers");
 const { SECRET_KEY } = process.env;
 const { requestError } = require('../helpers/index');
 
-
 const authenticate = async (req, res, next) => {
     try {
 
@@ -28,6 +27,5 @@ const authenticate = async (req, res, next) => {
         next(error)
     }
 } 
-
 
 module.exports = authenticate;

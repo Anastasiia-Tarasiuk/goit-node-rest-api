@@ -18,6 +18,7 @@ const usersSchema = new mongoose.Schema(
             default: "starter"
         },
         token: String,
+        avatarURL: String,
     }
 )
 

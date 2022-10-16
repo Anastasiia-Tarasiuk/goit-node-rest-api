@@ -2,7 +2,9 @@ const express = require('express');
 const { addContactValidation, updateContactValidation, updateStatusValidation } = require('../../models/modelContacts');
 const { listContacts, getContactById, removeContact, addContact, updateContact, updateStatus} = require("../../controllers/contacts/index");
 const router = express.Router();
-const authentificate = require('../../middlewares/authenticate');
+const authentificate = require('../../middlewares/authenticate')
+
+console.log(authentificate);
 
 router.get('/', authentificate, async (req, res, next) => {
   const contacts = await listContacts(req);

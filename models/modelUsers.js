@@ -53,8 +53,19 @@ function loginValidation(body) {
     return schema.validate(body); 
 }
 
+function verifyEmailSchema(body) {
+
+    const schema = Joi.object({
+        email: Joi.string().required(),
+    })
+
+    return schema.validate(body)
+}
+    
+
 module.exports = {
     User,
     registerValidation,
     loginValidation,
+    verifyEmailSchema
 }

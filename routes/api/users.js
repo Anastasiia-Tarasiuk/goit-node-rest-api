@@ -34,6 +34,8 @@ router.post('/register', async (req, res, next) => {
     })
 })
 
+router.get("/verify/:verificationToken", ctrlWrapper(ctrl.verify));
+
 router.post('/login', async (req, res, next) => { 
 const {email, password} = req.body;
     const user = await User.findOne({email});

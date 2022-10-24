@@ -19,6 +19,14 @@ const usersSchema = new mongoose.Schema(
         },
         token: String,
         avatarURL: String,
+        verify: {
+            type: Boolean,
+            default: false,
+        },
+        verificationToken: {
+            type: String,
+            required: [true, 'Verify token is required'],
+        }
     }
 )
 
@@ -45,8 +53,19 @@ function loginValidation(body) {
     return schema.validate(body); 
 }
 
+function verifyEmailSchema(body) {
+
+    const schema = Joi.object({
+        email: Joi.string().required(),
+    })
+
+    return schema.validate(body)
+}
+    
+
 module.exports = {
     User,
     registerValidation,
     loginValidation,
+    verifyEmailSchema
 }
